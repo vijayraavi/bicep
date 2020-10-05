@@ -6,7 +6,9 @@ using System.IO;
 using System.Linq;
 using Bicep.Cli.UnitTests;
 using Bicep.Cli.Utils;
+using Bicep.Core.Diagnostics;
 using Bicep.Core.Extensions;
+using Bicep.Core.FileSystem;
 using Bicep.Core.Samples;
 using Bicep.Core.SemanticModel;
 using Bicep.Core.Syntax;
@@ -365,7 +367,7 @@ namespace Bicep.Cli.IntegrationTests
 
         private IEnumerable<string> GetAllDiagnostics(string text, string bicepFilePath)
         {
-            var compilation = new Compilation(TestResourceTypeProvider.Create(), SyntaxFactory.CreateFromText(text));
+            var compilation = CompilationHelper.CreateForText(text);
             var lineStarts = TextCoordinateConverter.GetLineStarts(text);
 
             return compilation.GetSemanticModel()

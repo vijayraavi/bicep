@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using Bicep.Core.Diagnostics;
 using Bicep.Core.Parser;
@@ -22,7 +23,7 @@ namespace Bicep.Cli.Logging
             this.HasLoggedErrors = false;
         }
 
-        public void LogDiagnostic(string filePath, Diagnostic diagnostic, ImmutableArray<int> lineStarts)
+        public void LogDiagnostic(string filePath, Diagnostic diagnostic, IReadOnlyList<int> lineStarts)
         {
             (int line, int character) = TextCoordinateConverter.GetPosition(lineStarts, diagnostic.Span.Position);
             string message = $"{filePath}({line + 1},{character + 1}) : {diagnostic.Level} {diagnostic.Code}: {diagnostic.Message}";

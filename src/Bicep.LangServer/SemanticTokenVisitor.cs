@@ -160,6 +160,13 @@ namespace Bicep.LanguageServer
             base.VisitResourceDeclarationSyntax(syntax);
         }
 
+        public override void VisitModuleDeclarationSyntax(ModuleDeclarationSyntax syntax)
+        {
+            AddTokenType(syntax.Keyword, SemanticTokenType.Keyword);
+            AddTokenType(syntax.Name, SemanticTokenType.Variable);
+            base.VisitModuleDeclarationSyntax(syntax);
+        }
+
         public override void VisitSkippedTriviaSyntax(SkippedTriviaSyntax syntax)
         {
             base.VisitSkippedTriviaSyntax(syntax);

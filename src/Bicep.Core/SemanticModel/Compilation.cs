@@ -13,18 +13,25 @@ namespace Bicep.Core.SemanticModel
 {
     public class Compilation
     {
+        private readonly CompilationCollection compilationCollection;
         private readonly IResourceTypeProvider resourceTypeProvider;
         private readonly Lazy<SemanticModel> lazySemanticModel;
 
-        public Compilation(IResourceTypeProvider resourceTypeProvider, ProgramSyntax programSyntax)
+        public Compilation(CompilationCollection compilationCollection, IResourceTypeProvider resourceTypeProvider, ProgramSyntax programSyntax, ImmutableArray<int> lineStarts, string fileName)
         {
+            this.compilationCollection = compilationCollection;
             this.resourceTypeProvider = resourceTypeProvider;
+            this.LineStarts = lineStarts;
+            this.FileName = fileName;
             this.ProgramSyntax = programSyntax;
-
             this.lazySemanticModel = new Lazy<SemanticModel>(this.GetSemanticModelInternal, LazyThreadSafetyMode.PublicationOnly);
         }
 
         public ProgramSyntax ProgramSyntax { get; }
+
+        public ImmutableArray<int> LineStarts { get; }
+
+        public string FileName { get; }
 
         public SemanticModel GetSemanticModel() => this.lazySemanticModel.Value;
 
@@ -37,7 +44,8 @@ namespace Bicep.Core.SemanticModel
             // create this in locked mode by default
             // this blocks accidental type or binding queries until binding is done
             // (if a type check is done too early, unbound symbol references would cause incorrect type check results)
-            var symbolContext = new SymbolContext(new TypeManager(resourceTypeProvider, bindings, cyclesBySyntax), bindings);
+            var typeManager = new TypeManager(resourceTypeProvider, bindings, cyclesBySyntax);
+            var symbolContext = new SymbolContext(typeManager, bindings, compilationCollection, this);
 
             // collect declarations
             var declarations = new List<DeclaredSymbol>();
@@ -65,13 +73,14 @@ namespace Bicep.Core.SemanticModel
             // allow type queries now
             symbolContext.Unlock();
 
-            // TODO: Avoid looping 4 times?
+            // TODO: Avoid looping 5 times?
             var file = new FileSymbol("main",
                 this.ProgramSyntax,
                 builtinNamespaces,
                 declarations.OfType<ParameterSymbol>(),
                 declarations.OfType<VariableSymbol>(),
                 declarations.OfType<ResourceSymbol>(),
+                declarations.OfType<ModuleSymbol>(),
                 declarations.OfType<OutputSymbol>());
 
             return new SemanticModel(file, symbolContext.TypeManager, bindings);

@@ -22,7 +22,10 @@ namespace Bicep.Core.UnitTests.TypeSystem
 
             var bindings = new Dictionary<SyntaxBase, Symbol>();
             var cyclesBySyntax = new Dictionary<SyntaxBase, ImmutableArray<DeclaredSymbol>>();
-            var context = new SymbolContext(new TypeManager(TestResourceTypeProvider.Create(), bindings, cyclesBySyntax), bindings);
+            var compilationCollection = CompilationHelper.CreateCollectionWithSingleFile(TestResourceTypeProvider.Create(), "");
+            var compilation = CompilationHelper.GetSingleFileCompilation(compilationCollection);
+            var typeManager = new TypeManager(TestResourceTypeProvider.Create(), bindings, cyclesBySyntax);
+            var context = new SymbolContext(typeManager, bindings, compilationCollection, compilation);
 
             Action byName = () =>
             {

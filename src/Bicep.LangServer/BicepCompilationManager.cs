@@ -33,7 +33,7 @@ namespace Bicep.LanguageServer
         {
             try
             {
-                var context = this.provider.Create(text);
+                var context = this.provider.Create(uri, text);
 
                 // there shouldn't be concurrent upsert requests (famous last words...), so a simple overwrite should be sufficient
                 this.activeContexts[uri] = context;

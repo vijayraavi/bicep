@@ -138,6 +138,14 @@ namespace Bicep.Core.TypeSystem
             currentDeclaration = null;
         }
 
+        public override void VisitModuleDeclarationSyntax(ModuleDeclarationSyntax syntax)
+        {
+            currentDeclaration = declarations[syntax.Name.IdentifierName];
+            declarationAccessDict[currentDeclaration] = new List<SyntaxBase>();
+            base.VisitModuleDeclarationSyntax(syntax);
+            currentDeclaration = null;
+        }
+
         public override void VisitOutputDeclarationSyntax(OutputDeclarationSyntax syntax)
         {
             currentDeclaration = declarations[syntax.Name.IdentifierName];

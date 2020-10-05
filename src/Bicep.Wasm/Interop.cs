@@ -116,7 +116,10 @@ namespace Bicep.Wasm
 
         private static Compilation GetCompilation(string text)
         {
-            return new Compilation(resourceTypeProvider, SyntaxFactory.CreateFromText(text));
+            const string fileName = "main.bicep";
+            var fileResolver = new InMemoryFileResolver(new Dictionary<string, string> { [fileName] = text });
+            
+            return CompilationCollection.Create(fileResolver, resourceTypeProvider, fileName).TryGetCompilation(fileName, out _)!;
         }
 
         private static string ReadStreamToEnd(Stream stream)

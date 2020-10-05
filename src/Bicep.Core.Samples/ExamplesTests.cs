@@ -93,7 +93,7 @@ namespace Bicep.Core.Samples
         [DynamicData(nameof(GetExampleData), DynamicDataSourceType.Method, DynamicDataDisplayNameDeclaringType = typeof(ExampleData), DynamicDataDisplayName = nameof(ExampleData.GetDisplayName))]
         public void ExampleIsValid(ExampleData example)
         {
-            var compilation = new Compilation(new AzResourceTypeProvider(), SyntaxFactory.CreateFromText(example.BicepContents));
+            var compilation = CompilationHelper.CreateForText(new AzResourceTypeProvider(), example.BicepContents);
             var emitter = new TemplateEmitter(compilation.GetSemanticModel());
 
             using var stream = new MemoryStream();

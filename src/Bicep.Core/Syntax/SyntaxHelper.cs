@@ -8,6 +8,9 @@ namespace Bicep.Core.Syntax
 {
     public static class SyntaxHelper
     {
+        private static SyntaxBase? TryGetObjectProperty(ObjectSyntax objectSyntax, string propertyName)
+            => objectSyntax.Properties.SingleOrDefault(p => p.TryGetKeyText() == propertyName)?.Value;
+
         public static IEnumerable<SyntaxBase>? TryGetAllowedItems(ParameterDeclarationSyntax parameterDeclarationSyntax)
         {
             if (!(parameterDeclarationSyntax.Modifier is ObjectSyntax modifierObject))
@@ -15,18 +18,39 @@ namespace Bicep.Core.Syntax
                 return null;
             }
 
-            var allowedProperty = modifierObject.Properties.SingleOrDefault(p => p.TryGetKeyText() == LanguageConstants.ParameterAllowedPropertyName);
-            if (allowedProperty == null)
-            {
-                return null;
-            }
-
-            if (!(allowedProperty.Value is ArraySyntax allowedArraySyntax))
+            var allowedValuesSyntax = TryGetObjectProperty(modifierObject, LanguageConstants.ParameterAllowedPropertyName);
+            if (!(allowedValuesSyntax is ArraySyntax allowedArraySyntax))
             {
                 return null;
             }
 
             return allowedArraySyntax.Items.Select(i => i.Value);
+        }
+
+        public static SyntaxBase? TryGetDefaultValue(ParameterDeclarationSyntax parameterDeclarationSyntax)
+        {
+            if (parameterDeclarationSyntax.Modifier is ParameterDefaultValueSyntax defaultValueSyntax)
+            {
+                return defaultValueSyntax.DefaultValue;
+            }
+
+            if (parameterDeclarationSyntax.Modifier is ObjectSyntax modifierObject)
+            {
+                return TryGetObjectProperty(modifierObject, LanguageConstants.ParameterDefaultPropertyName);
+            }
+
+            return null;
+        }
+
+        public static string? TryGetModulePath(ModuleDeclarationSyntax moduleDeclarationSyntax)
+        {
+            var pathSyntax = moduleDeclarationSyntax.TryGetPath();
+            if (pathSyntax == null)
+            {
+                return null;
+            }
+            
+            return pathSyntax?.TryGetLiteralValue();
         }
 
         public static TypeSymbol? TryGetPrimitiveType(ParameterDeclarationSyntax parameterDeclarationSyntax)

@@ -5,6 +5,7 @@ using System.IO;
 using System.IO.Pipelines;
 using System.Threading;
 using System.Threading.Tasks;
+using Bicep.Core.FileSystem;
 using Bicep.Core.TypeSystem;
 using Bicep.Core.TypeSystem.Az;
 using Bicep.LanguageServer.CompilationManager;
@@ -65,6 +66,7 @@ namespace Bicep.LanguageServer
             // using type based registration so dependencies can be injected automatically
             // without manually constructing up the graph
             services.AddSingleton<IResourceTypeProvider>(services => resourceTypeProviderBuilder());
+            services.AddSingleton<IFileResolver, LspFileResolver>();
             services.AddSingleton<ICompilationManager, BicepCompilationManager>();
             services.AddSingleton<ICompilationProvider, BicepCompilationProvider>();
             services.AddSingleton<ISymbolResolver, BicepSymbolResolver>();

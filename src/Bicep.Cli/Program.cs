@@ -15,9 +15,14 @@ using Newtonsoft.Json;
 using Bicep.Cli.CommandLine.Arguments;
 using Bicep.Core.TypeSystem.Az;
 using Bicep.Core.TypeSystem;
+using System.Collections.Generic;
+using Bicep.Core.Diagnostics;
+using System.Collections.Immutable;
+using Bicep.Cli.FileSystem;
 
 namespace Bicep.Cli
 {
+
     public class Program
     {
         private readonly TextWriter outputWriter;
@@ -108,19 +113,24 @@ namespace Bicep.Cli
 
         private void BuildSingleFile(IDiagnosticLogger logger, string bicepPath, string outputPath)
         {
-            string text = ReadFile(bicepPath);
-            var lineStarts = TextCoordinateConverter.GetLineStarts(text);
+            var fileResolver = new FileResolver();
+            var compilationCollection = CompilationCollection.Create(fileResolver, resourceTypeProvider, bicepPath);
 
-            var compilation = new Compilation(resourceTypeProvider, SyntaxFactory.CreateFromText(text));
-
-            var emitter = new TemplateEmitter(compilation.GetSemanticModel());
-
-            using var outputStream = CreateFileStream(outputPath);
-            var result = emitter.Emit(outputStream);
-
-            foreach (var diagnostic in result.Diagnostics)
+            var mainCompilation = compilationCollection.TryGetCompilation(bicepPath, out var failureMessage);
+            if (mainCompilation == null)
             {
-                logger.LogDiagnostic(bicepPath, diagnostic, lineStarts);
+                throw new BicepException(failureMessage!);
+            }
+
+            var success = compilationCollection.EmitDiagnosticsAndCheckSuccess(
+                (compilation, diagnostic) => logger.LogDiagnostic(compilation.FileName, diagnostic, compilation.LineStarts));
+
+            if (success)
+            {
+                var emitter = new TemplateEmitter(mainCompilation.GetSemanticModel());
+
+                using var outputStream = CreateFileStream(outputPath);
+                emitter.Emit(outputStream);
             }
         }
 
@@ -136,18 +146,22 @@ namespace Bicep.Cli
             }
             foreach(var bicepPath in bicepPaths)
             {
-                string text = ReadFile(bicepPath);
-                var lineStarts = TextCoordinateConverter.GetLineStarts(text);
+                var fileResolver = new FileResolver();
+                var compilationCollection = CompilationCollection.Create(fileResolver, resourceTypeProvider, bicepPath);
 
-                var compilation = new Compilation(resourceTypeProvider, SyntaxFactory.CreateFromText(text));
-
-                var emitter = new TemplateEmitter(compilation.GetSemanticModel());
-
-                var result = emitter.Emit(writer);
-
-                foreach (var diagnostic in result.Diagnostics)
+                var mainCompilation = compilationCollection.TryGetCompilation(bicepPath, out var failureMessage);
+                if (mainCompilation == null)
                 {
-                    logger.LogDiagnostic(bicepPath, diagnostic, lineStarts);
+                    throw new BicepException(failureMessage!);
+                }
+
+                var success = compilationCollection.EmitDiagnosticsAndCheckSuccess(
+                    (compilation, diagnostic) => logger.LogDiagnostic(compilation.FileName, diagnostic, compilation.LineStarts));
+
+                if (success)
+                {
+                    var emitter = new TemplateEmitter(mainCompilation.GetSemanticModel());
+                    emitter.Emit(writer);
                 }
             }
             if (bicepPaths.Length > 1) {

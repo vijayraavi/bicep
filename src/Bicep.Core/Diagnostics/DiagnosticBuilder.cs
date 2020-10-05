@@ -235,6 +235,16 @@ namespace Bicep.Core.Diagnostics
                 "BCP040",
                 $"String interpolation is not supported for keys on objects of type \"{type}\". Permissible properties include {ToQuotedString(validUnspecifiedProperties)}.");
 
+            public ErrorDiagnostic ExpectedModuleIdentifier() => new ErrorDiagnostic(
+                TextSpan,
+                "BCP041",
+                "Expected a module identifier at this location.");
+
+            public ErrorDiagnostic ExpectedModulePathString() => new ErrorDiagnostic(
+                TextSpan,
+                "BCP042",
+                "Expected a module path string.");
+
             public ErrorDiagnostic InvalidExpression() => new ErrorDiagnostic(
                 TextSpan,
                 "BCP043",
@@ -355,6 +365,12 @@ namespace Bicep.Core.Diagnostics
                 "BCP066",
                 $"Function \"{functionName}\" is not valid at this location. It can only be used in resource declarations.");
 
+            public Diagnostic UnableToOpenFile(string fileName, string exceptionMessage) => new Diagnostic(
+                TextSpan,
+                DiagnosticLevel.Error,
+                "BCP067",
+                $"Loading file \"{fileName}\" failed with message \"{exceptionMessage}\".");
+
             public ErrorDiagnostic ExpectedResourceTypeString() => new ErrorDiagnostic(
                 TextSpan,
                 "BCP068",
@@ -457,6 +473,21 @@ namespace Bicep.Core.Diagnostics
                 warnInsteadOfError ? DiagnosticLevel.Warning : DiagnosticLevel.Error,
                 "BCP083",
                 $"The type \"{type}\" does not contain property \"{badProperty}\". Did you mean \"{suggestedProperty}\"?");
+
+            public ErrorDiagnostic UnableToFindPathForModule() => new ErrorDiagnostic(
+                TextSpan,
+                "BCP084",
+                "Unable to find file path for module.");
+
+            public ErrorDiagnostic UnableToFindPathForModuleWithError(string failureMessage) => new ErrorDiagnostic(
+                TextSpan,
+                "BCP085",
+                $"An error occurred loading the module. Rceived failure \"{failureMessage}\".");
+
+            public ErrorDiagnostic ModulePathInterpolationUnsupported() => new ErrorDiagnostic(
+                TextSpan,
+                "BCP086",
+                "String interpolation is unsupported for specifying the module path.");
         }
 
         public static DiagnosticBuilderInternal ForPosition(TextSpan span)

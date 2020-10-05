@@ -9,7 +9,7 @@ namespace Bicep.Cli
     /// </summary>
     public class BicepException : Exception
     {
-        public BicepException(string message, Exception? inner) : base(message, inner)
+        public BicepException(string message, Exception? inner = null) : base(message, inner)
         {
         }
     }

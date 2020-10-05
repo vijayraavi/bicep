@@ -1,11 +1,13 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
+using Bicep.Core.FileSystem;
 using Bicep.Core.Parser;
 using Bicep.Core.SemanticModel;
 using Bicep.Core.Text;
 using Bicep.Core.TypeSystem;
 using Bicep.Core.TypeSystem.Az;
 using Bicep.LanguageServer.CompilationManager;
+using OmniSharp.Extensions.LanguageServer.Protocol;
 
 namespace Bicep.LanguageServer.Providers
 {
@@ -16,23 +18,19 @@ namespace Bicep.LanguageServer.Providers
     public class BicepCompilationProvider: ICompilationProvider
     {
         private readonly IResourceTypeProvider resourceTypeProvider;
+        private readonly IFileResolver fileResolver;
 
-        public BicepCompilationProvider(IResourceTypeProvider resourceTypeProvider)
+        public BicepCompilationProvider(IResourceTypeProvider resourceTypeProvider, IFileResolver fileResolver)
         {
             this.resourceTypeProvider = resourceTypeProvider;
+            this.fileResolver = fileResolver;
         }
 
-        public CompilationContext Create(string text)
+        public CompilationContext Create(DocumentUri documentUri, string text)
         {
-            var lineStarts = TextCoordinateConverter.GetLineStarts(text);
+            var compilationCollection = CompilationCollection.CreateWithPreloadedMainFile(fileResolver, resourceTypeProvider, documentUri.GetFileSystemPath(), text);
 
-            var parser = new Parser(text);
-            var program = parser.Program();
-
-            var compilation = new Compilation(resourceTypeProvider, program);
-
-            return new CompilationContext(compilation, lineStarts);
+            return new CompilationContext(compilationCollection, documentUri);
         }
     }
 }
-

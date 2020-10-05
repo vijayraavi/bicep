@@ -9,6 +9,7 @@ using Bicep.Core.SemanticModel;
 using Bicep.Core.Syntax;
 using Bicep.Core.TypeSystem;
 using Bicep.Core.UnitTests.Assertions;
+using Bicep.Core.UnitTests.Utils;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -30,7 +31,7 @@ namespace Bicep.Core.IntegrationTests
                 .Setup(x => x.HasType(It.IsAny<ResourceTypeReference>()))
                 .Returns<ResourceTypeReference>(x => registeredTypes.ContainsKey(x));
 
-            var compilation = new Compilation(typeRegistrarMock.Object, SyntaxFactory.CreateFromText(programText));
+            var compilation = CompilationHelper.CreateForText(typeRegistrarMock.Object, programText);
             return compilation.GetSemanticModel();
         }
 

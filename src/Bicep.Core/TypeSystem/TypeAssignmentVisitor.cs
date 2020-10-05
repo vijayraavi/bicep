@@ -156,6 +156,51 @@ namespace Bicep.Core.TypeSystem
                 return TypeValidator.NarrowTypeAndCollectDiagnostics(typeManager, syntax.Body, declaredType, diagnostics);
             });
 
+        public override void VisitModuleDeclarationSyntax(ModuleDeclarationSyntax syntax)
+            => AssignTypeWithDiagnostics(syntax, diagnostics => {
+                var moduleSymbol = bindings[syntax] as ModuleSymbol;
+                if (moduleSymbol == null)
+                {
+                    return new ErrorTypeSymbol(DiagnosticBuilder.ForPosition(syntax.Path).UnableToFindPathForModule());
+                }
+
+                var moduleCompilation = moduleSymbol.TryGetReferencedCompilation(out var failureDiagnostic);
+                if (moduleCompilation == null)
+                {
+                    failureDiagnostic = failureDiagnostic ?? DiagnosticBuilder.ForPosition(syntax.Path).UnableToFindPathForModule();
+
+                    return new ErrorTypeSymbol(failureDiagnostic);
+                }
+
+                var moduleSemanticModel = moduleCompilation.GetSemanticModel();
+                
+                var typeProperties = new List<TypeProperty>();
+                foreach (var param in moduleSemanticModel.Root.ParameterDeclarations)
+                {
+                    var typePropertyFlags = TypePropertyFlags.WriteOnly;
+                    if (SyntaxHelper.TryGetDefaultValue(param.DeclaringParameter) == null)
+                    {
+                        // if there's no default value, it must be specified
+                        typePropertyFlags |= TypePropertyFlags.Required;
+                    }
+
+                    typeProperties.Add(new TypeProperty(param.Name, param.Type, typePropertyFlags));
+                }
+
+                foreach (var output in moduleSemanticModel.Root.OutputDeclarations)
+                {
+                    typeProperties.Add(new TypeProperty(output.Name, output.Type, TypePropertyFlags.ReadOnly));
+                }
+
+                var expectedType = new NamedObjectType(
+                    syntax.Name.IdentifierName,
+                    TypeSymbolValidationFlags.Default,
+                    typeProperties,
+                    null);
+
+                return TypeValidator.NarrowTypeAndCollectDiagnostics(typeManager, syntax.Body, expectedType, diagnostics);
+            });
+
         public override void VisitParameterDeclarationSyntax(ParameterDeclarationSyntax syntax)
             => AssignTypeWithDiagnostics(syntax, diagnostics => {
                 diagnostics.AddRange(this.ValidateIdentifierAccess(syntax));
@@ -627,6 +672,9 @@ namespace Bicep.Core.TypeSystem
                         // resource bodies can participate in cycles
                         // need to explicitly force a type check on the body
                         return new DeferredTypeReference(() => VisitDeclaredSymbol(syntax, resource));
+
+                    case ModuleSymbol module:
+                        return new DeferredTypeReference(() => VisitDeclaredSymbol(syntax, module));
 
                     case ParameterSymbol parameter:
                         return new DeferredTypeReference(() => VisitDeclaredSymbol(syntax, parameter));
