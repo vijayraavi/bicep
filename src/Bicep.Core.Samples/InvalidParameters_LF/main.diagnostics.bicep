@@ -143,7 +143,7 @@ param wrongType fluffyBunny = 'what\'s ${'up${doc}'}?
 param wrongType fluffyBunny = '${{this: doesnt}.work}'
 //@[6:15) [BCP028 (Error)] Identifier 'wrongType' is declared multiple times. Remove or rename the duplicates. |wrongType|
 //@[16:27) [BCP031 (Error)] The parameter type is not valid. Please specify one of the following types: array, bool, int, object, string. |fluffyBunny|
-//@[34:38) [BCP019 (Error)] Expected a new line character at this location. |this|
+//@[33:34) [BCP080 (Error)] Array and object literals are not allowed here. |{|
 //@[53:54) [BCP004 (Error)] The string at this location is not terminated due to an unexpected new line character. |'|
 //@[54:54) [BCP004 (Error)] The string at this location is not terminated due to an unexpected new line character. ||
 
@@ -233,9 +233,9 @@ param paramDefaultOneCycle string = paramDefaultOneCycle
 
 // 2-cycle in params
 param paramDefaultTwoCycle1 string = paramDefaultTwoCycle2
-//@[37:58) [BCP080 (Error)] The expression is involved in a cycle (paramDefaultTwoCycle2 -> paramDefaultTwoCycle1). |paramDefaultTwoCycle2|
+//@[37:58) [BCP060 (Error)] The expression is involved in a cycle (paramDefaultTwoCycle2 -> paramDefaultTwoCycle1). |paramDefaultTwoCycle2|
 param paramDefaultTwoCycle2 string = paramDefaultTwoCycle1
-//@[37:58) [BCP080 (Error)] The expression is involved in a cycle (paramDefaultTwoCycle1 -> paramDefaultTwoCycle2). |paramDefaultTwoCycle1|
+//@[37:58) [BCP060 (Error)] The expression is involved in a cycle (paramDefaultTwoCycle1 -> paramDefaultTwoCycle2). |paramDefaultTwoCycle1|
 
 // 1-cycle in modifier params
 param paramModifierOneCycle string {
@@ -255,19 +255,19 @@ param paramModifierSelfCycle string {
 // 2-cycle in modifier params
 param paramModifierTwoCycle1 string {
   default: paramModifierTwoCycle2
-//@[11:33) [BCP080 (Error)] The expression is involved in a cycle (paramModifierTwoCycle2 -> paramModifierTwoCycle1). |paramModifierTwoCycle2|
+//@[11:33) [BCP060 (Error)] The expression is involved in a cycle (paramModifierTwoCycle2 -> paramModifierTwoCycle1). |paramModifierTwoCycle2|
 }
 param paramModifierTwoCycle2 string {
   default: paramModifierTwoCycle1
-//@[11:33) [BCP080 (Error)] The expression is involved in a cycle (paramModifierTwoCycle1 -> paramModifierTwoCycle2). |paramModifierTwoCycle1|
+//@[11:33) [BCP060 (Error)] The expression is involved in a cycle (paramModifierTwoCycle1 -> paramModifierTwoCycle2). |paramModifierTwoCycle1|
 }
 
 // 2-cycle mixed param syntaxes
 param paramMixedTwoCycle1 string = paramMixedTwoCycle2
-//@[35:54) [BCP080 (Error)] The expression is involved in a cycle (paramMixedTwoCycle2 -> paramMixedTwoCycle1). |paramMixedTwoCycle2|
+//@[35:54) [BCP060 (Error)] The expression is involved in a cycle (paramMixedTwoCycle2 -> paramMixedTwoCycle1). |paramMixedTwoCycle2|
 param paramMixedTwoCycle2 string {
   default: paramMixedTwoCycle1
-//@[11:30) [BCP080 (Error)] The expression is involved in a cycle (paramMixedTwoCycle1 -> paramMixedTwoCycle2). |paramMixedTwoCycle1|
+//@[11:30) [BCP060 (Error)] The expression is involved in a cycle (paramMixedTwoCycle1 -> paramMixedTwoCycle2). |paramMixedTwoCycle1|
 }
 
 // wrong types of "variable"/identifier access

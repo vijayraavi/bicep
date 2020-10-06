@@ -453,6 +453,11 @@ namespace Bicep.Core.Diagnostics
                 warnInsteadOfError ? DiagnosticLevel.Warning : DiagnosticLevel.Error,
                 "BCP083",
                 $"The type {type} does not contain property '{badProperty}'. Did you mean '{suggestedProperty}'?");
+
+            public ErrorDiagnostic ComplexLiteralsNotAllowed() => new ErrorDiagnostic(
+                TextSpan,
+                "BCP084",
+                "Array and object literals are not allowed here.");
         }
 
         public static DiagnosticBuilderInternal ForPosition(TextSpan span)

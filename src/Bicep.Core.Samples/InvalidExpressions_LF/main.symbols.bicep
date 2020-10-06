@@ -302,3 +302,21 @@ var invalidPropertyCallOnInstanceFunctionAccess = a.b.c.bar().baz
 var invalidInstanceFunctionAccess = a.b.c.bar()
 //@[4:33) Variable invalidInstanceFunctionAccess. Type: error. Declaration start char: 0, length: 47
 
+var partialObject = {
+//@[4:17) Variable partialObject. Type: error. Declaration start char: 0, length: 126
+  2: true
+  +
+  3 : concat('s')
+  
+  's' 
+  's' \
+  'e'   =
+  's' :
+
+  a
+  b $
+  a # 22
+  c :
+  d  : %
+}
+

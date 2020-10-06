@@ -210,3 +210,20 @@ var badIndexer = sampleObject.myStr['s']
 var badInnerArray = sampleObject.myInner.fakeArr['s']
 var invalidPropertyCallOnInstanceFunctionAccess = a.b.c.bar().baz
 var invalidInstanceFunctionAccess = a.b.c.bar()
+
+var partialObject = {
+  2: true
+  +
+  3 : concat('s')
+  
+  's' 
+  's' \
+  'e'   =
+  's' :
+
+  a
+  b $
+  a # 22
+  c :
+  d  : %
+}

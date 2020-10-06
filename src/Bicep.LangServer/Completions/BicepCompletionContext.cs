@@ -6,6 +6,7 @@ using System.Linq;
 using Bicep.Core.Navigation;
 using Bicep.Core.Parser;
 using Bicep.Core.Syntax;
+using Bicep.Core.TypeSystem;
 
 namespace Bicep.LanguageServer.Completions
 {

@@ -128,21 +128,21 @@ resource foo 'Microsoft.Foo/foos@2020-02-02-alpha'= {
 //@[52:53)   LeftBrace |{|
 //@[53:55)   NewLine |\r\n|
   name: 'foo'
-//@[2:15)   ObjectPropertySyntax
+//@[2:13)   ObjectPropertySyntax
 //@[2:6)    IdentifierSyntax
 //@[2:6)     Identifier |name|
 //@[6:7)    Colon |:|
 //@[8:13)    StringSyntax
 //@[8:13)     StringComplete |'foo'|
-//@[13:15)    NewLine |\r\n|
+//@[13:15)   NewLine |\r\n|
   name: true
-//@[2:14)   ObjectPropertySyntax
+//@[2:12)   ObjectPropertySyntax
 //@[2:6)    IdentifierSyntax
 //@[2:6)     Identifier |name|
 //@[6:7)    Colon |:|
 //@[8:12)    BooleanLiteralSyntax
 //@[8:12)     TrueKeyword |true|
-//@[12:14)    NewLine |\r\n|
+//@[12:14)   NewLine |\r\n|
 }
 //@[0:1)   RightBrace |}|
 //@[1:5) NewLine |\r\n\r\n|
@@ -161,21 +161,21 @@ resource foo 'Microsoft.Foo/foos@2020-02-02-alpha'= {
 //@[52:53)   LeftBrace |{|
 //@[53:55)   NewLine |\r\n|
   name: 'foo'
-//@[2:15)   ObjectPropertySyntax
+//@[2:13)   ObjectPropertySyntax
 //@[2:6)    IdentifierSyntax
 //@[2:6)     Identifier |name|
 //@[6:7)    Colon |:|
 //@[8:13)    StringSyntax
 //@[8:13)     StringComplete |'foo'|
-//@[13:15)    NewLine |\r\n|
+//@[13:15)   NewLine |\r\n|
   'name': true
-//@[2:16)   ObjectPropertySyntax
+//@[2:14)   ObjectPropertySyntax
 //@[2:8)    StringSyntax
 //@[2:8)     StringComplete |'name'|
 //@[8:9)    Colon |:|
 //@[10:14)    BooleanLiteralSyntax
 //@[10:14)     TrueKeyword |true|
-//@[14:16)    NewLine |\r\n|
+//@[14:16)   NewLine |\r\n|
 }
 //@[0:1)   RightBrace |}|
 //@[1:5) NewLine |\r\n\r\n|
@@ -194,15 +194,15 @@ resource foo 'Microsoft.Foo/foos@2020-02-02-alpha'= {
 //@[52:53)   LeftBrace |{|
 //@[53:55)   NewLine |\r\n|
   name: 'foo'
-//@[2:15)   ObjectPropertySyntax
+//@[2:13)   ObjectPropertySyntax
 //@[2:6)    IdentifierSyntax
 //@[2:6)     Identifier |name|
 //@[6:7)    Colon |:|
 //@[8:13)    StringSyntax
 //@[8:13)     StringComplete |'foo'|
-//@[13:15)    NewLine |\r\n|
+//@[13:15)   NewLine |\r\n|
   properties: {
-//@[2:50)   ObjectPropertySyntax
+//@[2:48)   ObjectPropertySyntax
 //@[2:12)    IdentifierSyntax
 //@[2:12)     Identifier |properties|
 //@[12:13)    Colon |:|
@@ -210,24 +210,24 @@ resource foo 'Microsoft.Foo/foos@2020-02-02-alpha'= {
 //@[14:15)     LeftBrace |{|
 //@[15:17)     NewLine |\r\n|
     foo: 'a'
-//@[4:14)     ObjectPropertySyntax
+//@[4:12)     ObjectPropertySyntax
 //@[4:7)      IdentifierSyntax
 //@[4:7)       Identifier |foo|
 //@[7:8)      Colon |:|
 //@[9:12)      StringSyntax
 //@[9:12)       StringComplete |'a'|
-//@[12:14)      NewLine |\r\n|
+//@[12:14)     NewLine |\r\n|
     foo: 'a'
-//@[4:14)     ObjectPropertySyntax
+//@[4:12)     ObjectPropertySyntax
 //@[4:7)      IdentifierSyntax
 //@[4:7)       Identifier |foo|
 //@[7:8)      Colon |:|
 //@[9:12)      StringSyntax
 //@[9:12)       StringComplete |'a'|
-//@[12:14)      NewLine |\r\n|
+//@[12:14)     NewLine |\r\n|
   }
 //@[2:3)     RightBrace |}|
-//@[3:5)    NewLine |\r\n|
+//@[3:5)   NewLine |\r\n|
 }
 //@[0:1)   RightBrace |}|
 //@[1:5) NewLine |\r\n\r\n|
@@ -246,15 +246,15 @@ resource foo 'Microsoft.Foo/foos@2020-02-02-alpha'= {
 //@[52:53)   LeftBrace |{|
 //@[53:55)   NewLine |\r\n|
   name: 'foo'
-//@[2:15)   ObjectPropertySyntax
+//@[2:13)   ObjectPropertySyntax
 //@[2:6)    IdentifierSyntax
 //@[2:6)     Identifier |name|
 //@[6:7)    Colon |:|
 //@[8:13)    StringSyntax
 //@[8:13)     StringComplete |'foo'|
-//@[13:15)    NewLine |\r\n|
+//@[13:15)   NewLine |\r\n|
   properties: {
-//@[2:52)   ObjectPropertySyntax
+//@[2:50)   ObjectPropertySyntax
 //@[2:12)    IdentifierSyntax
 //@[2:12)     Identifier |properties|
 //@[12:13)    Colon |:|
@@ -262,24 +262,24 @@ resource foo 'Microsoft.Foo/foos@2020-02-02-alpha'= {
 //@[14:15)     LeftBrace |{|
 //@[15:17)     NewLine |\r\n|
     foo: 'a'
-//@[4:14)     ObjectPropertySyntax
+//@[4:12)     ObjectPropertySyntax
 //@[4:7)      IdentifierSyntax
 //@[4:7)       Identifier |foo|
 //@[7:8)      Colon |:|
 //@[9:12)      StringSyntax
 //@[9:12)       StringComplete |'a'|
-//@[12:14)      NewLine |\r\n|
+//@[12:14)     NewLine |\r\n|
     'foo': 'a'
-//@[4:16)     ObjectPropertySyntax
+//@[4:14)     ObjectPropertySyntax
 //@[4:9)      StringSyntax
 //@[4:9)       StringComplete |'foo'|
 //@[9:10)      Colon |:|
 //@[11:14)      StringSyntax
 //@[11:14)       StringComplete |'a'|
-//@[14:16)      NewLine |\r\n|
+//@[14:16)     NewLine |\r\n|
   }
 //@[2:3)     RightBrace |}|
-//@[3:5)    NewLine |\r\n|
+//@[3:5)   NewLine |\r\n|
 }
 //@[0:1)   RightBrace |}|
 //@[1:5) NewLine |\r\n\r\n|
@@ -298,15 +298,15 @@ resource foo 'Microsoft.Foo/foos@2020-02-02-alpha'= {
 //@[52:53)   LeftBrace |{|
 //@[53:55)   NewLine |\r\n|
   name: 'foo'
-//@[2:15)   ObjectPropertySyntax
+//@[2:13)   ObjectPropertySyntax
 //@[2:6)    IdentifierSyntax
 //@[2:6)     Identifier |name|
 //@[6:7)    Colon |:|
 //@[8:13)    StringSyntax
 //@[8:13)     StringComplete |'foo'|
-//@[13:15)    NewLine |\r\n|
+//@[13:15)   NewLine |\r\n|
   location: [
-//@[2:20)   ObjectPropertySyntax
+//@[2:18)   ObjectPropertySyntax
 //@[2:10)    IdentifierSyntax
 //@[2:10)     Identifier |location|
 //@[10:11)    Colon |:|
@@ -315,15 +315,15 @@ resource foo 'Microsoft.Foo/foos@2020-02-02-alpha'= {
 //@[13:15)     NewLine |\r\n|
   ]
 //@[2:3)     RightSquare |]|
-//@[3:5)    NewLine |\r\n|
+//@[3:5)   NewLine |\r\n|
   tags: 'tag are not a string?'
-//@[2:33)   ObjectPropertySyntax
+//@[2:31)   ObjectPropertySyntax
 //@[2:6)    IdentifierSyntax
 //@[2:6)     Identifier |tags|
 //@[6:7)    Colon |:|
 //@[8:31)    StringSyntax
 //@[8:31)     StringComplete |'tag are not a string?'|
-//@[31:33)    NewLine |\r\n|
+//@[31:33)   NewLine |\r\n|
 }
 //@[0:1)   RightBrace |}|
 //@[1:5) NewLine |\r\n\r\n|
@@ -340,7 +340,7 @@ resource bar 'Microsoft.Foo/foos@2020-02-02-alpha' = {
 //@[53:54)   LeftBrace |{|
 //@[54:56)   NewLine |\r\n|
   name: true ? 's' : 'a' + 1
-//@[2:30)   ObjectPropertySyntax
+//@[2:28)   ObjectPropertySyntax
 //@[2:6)    IdentifierSyntax
 //@[2:6)     Identifier |name|
 //@[6:7)    Colon |:|
@@ -357,9 +357,9 @@ resource bar 'Microsoft.Foo/foos@2020-02-02-alpha' = {
 //@[25:26)      Plus |+|
 //@[27:28)      NumericLiteralSyntax
 //@[27:28)       Number |1|
-//@[28:30)    NewLine |\r\n|
+//@[28:30)   NewLine |\r\n|
   properties: {
-//@[2:144)   ObjectPropertySyntax
+//@[2:142)   ObjectPropertySyntax
 //@[2:12)    IdentifierSyntax
 //@[2:12)     Identifier |properties|
 //@[12:13)    Colon |:|
@@ -367,7 +367,7 @@ resource bar 'Microsoft.Foo/foos@2020-02-02-alpha' = {
 //@[14:15)     LeftBrace |{|
 //@[15:17)     NewLine |\r\n|
     x: foo()
-//@[4:14)     ObjectPropertySyntax
+//@[4:12)     ObjectPropertySyntax
 //@[4:5)      IdentifierSyntax
 //@[4:5)       Identifier |x|
 //@[5:6)      Colon |:|
@@ -376,9 +376,9 @@ resource bar 'Microsoft.Foo/foos@2020-02-02-alpha' = {
 //@[7:10)        Identifier |foo|
 //@[10:11)       LeftParen |(|
 //@[11:12)       RightParen |)|
-//@[12:14)      NewLine |\r\n|
+//@[12:14)     NewLine |\r\n|
     y: true && (null || !4)
-//@[4:29)     ObjectPropertySyntax
+//@[4:27)     ObjectPropertySyntax
 //@[4:5)      IdentifierSyntax
 //@[4:5)       Identifier |y|
 //@[5:6)      Colon |:|
@@ -397,9 +397,9 @@ resource bar 'Microsoft.Foo/foos@2020-02-02-alpha' = {
 //@[25:26)          NumericLiteralSyntax
 //@[25:26)           Number |4|
 //@[26:27)        RightParen |)|
-//@[27:29)      NewLine |\r\n|
+//@[27:29)     NewLine |\r\n|
     a: [
-//@[4:79)     ObjectPropertySyntax
+//@[4:77)     ObjectPropertySyntax
 //@[4:5)      IdentifierSyntax
 //@[4:5)       Identifier |a|
 //@[5:6)      Colon |:|
@@ -444,10 +444,10 @@ resource bar 'Microsoft.Foo/foos@2020-02-02-alpha' = {
 //@[38:40)        NewLine |\r\n|
     ]
 //@[4:5)       RightSquare |]|
-//@[5:7)      NewLine |\r\n|
+//@[5:7)     NewLine |\r\n|
   }
 //@[2:3)     RightBrace |}|
-//@[3:5)    NewLine |\r\n|
+//@[3:5)   NewLine |\r\n|
 }
 //@[0:1)   RightBrace |}|
 //@[1:5) NewLine |\r\n\r\n|
@@ -518,37 +518,37 @@ resource baz 'Microsoft.Foo/foos@2020-02-02-alpha' = {
 //@[53:54)   LeftBrace |{|
 //@[54:56)   NewLine |\r\n|
   name: 'test'
-//@[2:16)   ObjectPropertySyntax
+//@[2:14)   ObjectPropertySyntax
 //@[2:6)    IdentifierSyntax
 //@[2:6)     Identifier |name|
 //@[6:7)    Colon |:|
 //@[8:14)    StringSyntax
 //@[8:14)     StringComplete |'test'|
-//@[14:16)    NewLine |\r\n|
+//@[14:16)   NewLine |\r\n|
   id: 2
-//@[2:9)   ObjectPropertySyntax
+//@[2:7)   ObjectPropertySyntax
 //@[2:4)    IdentifierSyntax
 //@[2:4)     Identifier |id|
 //@[4:5)    Colon |:|
 //@[6:7)    NumericLiteralSyntax
 //@[6:7)     Number |2|
-//@[7:9)    NewLine |\r\n|
+//@[7:9)   NewLine |\r\n|
   type: 'hello'
-//@[2:17)   ObjectPropertySyntax
+//@[2:15)   ObjectPropertySyntax
 //@[2:6)    IdentifierSyntax
 //@[2:6)     Identifier |type|
 //@[6:7)    Colon |:|
 //@[8:15)    StringSyntax
 //@[8:15)     StringComplete |'hello'|
-//@[15:17)    NewLine |\r\n|
+//@[15:17)   NewLine |\r\n|
   apiVersion: true
-//@[2:20)   ObjectPropertySyntax
+//@[2:18)   ObjectPropertySyntax
 //@[2:12)    IdentifierSyntax
 //@[2:12)     Identifier |apiVersion|
 //@[12:13)    Colon |:|
 //@[14:18)    BooleanLiteralSyntax
 //@[14:18)     TrueKeyword |true|
-//@[18:20)    NewLine |\r\n|
+//@[18:20)   NewLine |\r\n|
 }
 //@[0:1)   RightBrace |}|
 //@[1:5) NewLine |\r\n\r\n|
@@ -565,15 +565,15 @@ resource badDepends 'Microsoft.Foo/foos@2020-02-02-alpha' = {
 //@[60:61)   LeftBrace |{|
 //@[61:63)   NewLine |\r\n|
   name: 'test'
-//@[2:16)   ObjectPropertySyntax
+//@[2:14)   ObjectPropertySyntax
 //@[2:6)    IdentifierSyntax
 //@[2:6)     Identifier |name|
 //@[6:7)    Colon |:|
 //@[8:14)    StringSyntax
 //@[8:14)     StringComplete |'test'|
-//@[14:16)    NewLine |\r\n|
+//@[14:16)   NewLine |\r\n|
   dependsOn: [
-//@[2:33)   ObjectPropertySyntax
+//@[2:31)   ObjectPropertySyntax
 //@[2:11)    IdentifierSyntax
 //@[2:11)     Identifier |dependsOn|
 //@[11:12)    Colon |:|
@@ -592,7 +592,7 @@ resource badDepends 'Microsoft.Foo/foos@2020-02-02-alpha' = {
 //@[10:12)      NewLine |\r\n|
   ]
 //@[2:3)     RightSquare |]|
-//@[3:5)    NewLine |\r\n|
+//@[3:5)   NewLine |\r\n|
 }
 //@[0:1)   RightBrace |}|
 //@[1:5) NewLine |\r\n\r\n|
@@ -609,15 +609,15 @@ resource badDepends2 'Microsoft.Foo/foos@2020-02-02-alpha' = {
 //@[61:62)   LeftBrace |{|
 //@[62:64)   NewLine |\r\n|
   name: 'test'
-//@[2:16)   ObjectPropertySyntax
+//@[2:14)   ObjectPropertySyntax
 //@[2:6)    IdentifierSyntax
 //@[2:6)     Identifier |name|
 //@[6:7)    Colon |:|
 //@[8:14)    StringSyntax
 //@[8:14)     StringComplete |'test'|
-//@[14:16)    NewLine |\r\n|
+//@[14:16)   NewLine |\r\n|
   dependsOn: [
-//@[2:44)   ObjectPropertySyntax
+//@[2:42)   ObjectPropertySyntax
 //@[2:11)    IdentifierSyntax
 //@[2:11)     Identifier |dependsOn|
 //@[11:12)    Colon |:|
@@ -636,7 +636,7 @@ resource badDepends2 'Microsoft.Foo/foos@2020-02-02-alpha' = {
 //@[8:10)      NewLine |\r\n|
   ]
 //@[2:3)     RightSquare |]|
-//@[3:5)    NewLine |\r\n|
+//@[3:5)   NewLine |\r\n|
 }
 //@[0:1)   RightBrace |}|
 //@[1:5) NewLine |\r\n\r\n|
@@ -653,13 +653,13 @@ resource badDepends3 'Microsoft.Foo/foos@2020-02-02-alpha' = {
 //@[61:62)   LeftBrace |{|
 //@[62:64)   NewLine |\r\n|
   name: 'test'
-//@[2:16)   ObjectPropertySyntax
+//@[2:14)   ObjectPropertySyntax
 //@[2:6)    IdentifierSyntax
 //@[2:6)     Identifier |name|
 //@[6:7)    Colon |:|
 //@[8:14)    StringSyntax
 //@[8:14)     StringComplete |'test'|
-//@[14:16)    NewLine |\r\n|
+//@[14:16)   NewLine |\r\n|
 }
 //@[0:1)   RightBrace |}|
 //@[1:5) NewLine |\r\n\r\n|
@@ -676,15 +676,15 @@ resource badDepends4 'Microsoft.Foo/foos@2020-02-02-alpha' = {
 //@[61:62)   LeftBrace |{|
 //@[62:64)   NewLine |\r\n|
   name: 'test'
-//@[2:16)   ObjectPropertySyntax
+//@[2:14)   ObjectPropertySyntax
 //@[2:6)    IdentifierSyntax
 //@[2:6)     Identifier |name|
 //@[6:7)    Colon |:|
 //@[8:14)    StringSyntax
 //@[8:14)     StringComplete |'test'|
-//@[14:16)    NewLine |\r\n|
+//@[14:16)   NewLine |\r\n|
   dependsOn: [
-//@[2:38)   ObjectPropertySyntax
+//@[2:36)   ObjectPropertySyntax
 //@[2:11)    IdentifierSyntax
 //@[2:11)     Identifier |dependsOn|
 //@[11:12)    Colon |:|
@@ -699,7 +699,7 @@ resource badDepends4 'Microsoft.Foo/foos@2020-02-02-alpha' = {
 //@[15:17)      NewLine |\r\n|
   ]
 //@[2:3)     RightSquare |]|
-//@[3:5)    NewLine |\r\n|
+//@[3:5)   NewLine |\r\n|
 }
 //@[0:1)   RightBrace |}|
 //@[1:5) NewLine |\r\n\r\n|
@@ -716,15 +716,15 @@ resource badDepends5 'Microsoft.Foo/foos@2020-02-02-alpha' = {
 //@[61:62)   LeftBrace |{|
 //@[62:64)   NewLine |\r\n|
   name: 'test'
-//@[2:16)   ObjectPropertySyntax
+//@[2:14)   ObjectPropertySyntax
 //@[2:6)    IdentifierSyntax
 //@[2:6)     Identifier |name|
 //@[6:7)    Colon |:|
 //@[8:14)    StringSyntax
 //@[8:14)     StringComplete |'test'|
-//@[14:16)    NewLine |\r\n|
+//@[14:16)   NewLine |\r\n|
   dependsOn: badDepends3.dependsOn
-//@[2:36)   ObjectPropertySyntax
+//@[2:34)   ObjectPropertySyntax
 //@[2:11)    IdentifierSyntax
 //@[2:11)     Identifier |dependsOn|
 //@[11:12)    Colon |:|
@@ -735,7 +735,7 @@ resource badDepends5 'Microsoft.Foo/foos@2020-02-02-alpha' = {
 //@[24:25)     Dot |.|
 //@[25:34)     IdentifierSyntax
 //@[25:34)      Identifier |dependsOn|
-//@[34:36)    NewLine |\r\n|
+//@[34:36)   NewLine |\r\n|
 }
 //@[0:1)   RightBrace |}|
 //@[1:5) NewLine |\r\n\r\n|
@@ -761,15 +761,15 @@ resource badInterp 'Microsoft.Foo/foos@2020-02-02-alpha' = {
 //@[59:60)   LeftBrace |{|
 //@[60:62)   NewLine |\r\n|
   name: 'test'
-//@[2:16)   ObjectPropertySyntax
+//@[2:14)   ObjectPropertySyntax
 //@[2:6)    IdentifierSyntax
 //@[2:6)     Identifier |name|
 //@[6:7)    Colon |:|
 //@[8:14)    StringSyntax
 //@[8:14)     StringComplete |'test'|
-//@[14:16)    NewLine |\r\n|
+//@[14:16)   NewLine |\r\n|
   '${interpVal}': 'unsupported' // resource definition does not allow for additionalProperties
-//@[2:96)   ObjectPropertySyntax
+//@[2:31)   ObjectPropertySyntax
 //@[2:16)    StringSyntax
 //@[2:5)     StringLeftPiece |'${|
 //@[5:14)     VariableAccessSyntax
@@ -779,9 +779,9 @@ resource badInterp 'Microsoft.Foo/foos@2020-02-02-alpha' = {
 //@[16:17)    Colon |:|
 //@[18:31)    StringSyntax
 //@[18:31)     StringComplete |'unsupported'|
-//@[94:96)    NewLine |\r\n|
+//@[94:96)   NewLine |\r\n|
   '${undefinedSymbol}': true
-//@[2:30)   ObjectPropertySyntax
+//@[2:28)   ObjectPropertySyntax
 //@[2:22)    StringSyntax
 //@[2:5)     StringLeftPiece |'${|
 //@[5:20)     VariableAccessSyntax
@@ -791,7 +791,7 @@ resource badInterp 'Microsoft.Foo/foos@2020-02-02-alpha' = {
 //@[22:23)    Colon |:|
 //@[24:28)    BooleanLiteralSyntax
 //@[24:28)     TrueKeyword |true|
-//@[28:30)    NewLine |\r\n|
+//@[28:30)   NewLine |\r\n|
 }
 //@[0:1)   RightBrace |}|
 //@[1:1) EndOfFile ||
