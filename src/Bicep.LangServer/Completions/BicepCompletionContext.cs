@@ -6,26 +6,29 @@ using System.Linq;
 using Bicep.Core.Navigation;
 using Bicep.Core.Parser;
 using Bicep.Core.Syntax;
-using Bicep.Core.TypeSystem;
 
 namespace Bicep.LanguageServer.Completions
 {
     public class BicepCompletionContext
     {
-        public BicepCompletionContext(BicepCompletionContextKind kind)
+        public BicepCompletionContext(BicepCompletionContextKind kind, ObjectSyntax? @object = null)
         {
             this.Kind = kind;
+            this.Object = @object;
         }
 
         public BicepCompletionContextKind Kind { get; }
+
+        public ObjectSyntax? Object { get; }
 
         public static BicepCompletionContext Create(ProgramSyntax syntax, int offset)
         {
             var matchingNodes = FindNodesMatchingOffset(syntax, offset);
             var kind = ConvertFlag(IsDeclarationStartContext(matchingNodes, offset), BicepCompletionContextKind.DeclarationStart) |
-                       GetDeclarationTypeFlags(matchingNodes, offset);
+                       GetDeclarationTypeFlags(matchingNodes, offset) |
+                       ConvertFlag(IsPropertyStartContext(matchingNodes, offset, out var @object), BicepCompletionContextKind.PropertyName);
 
-            return new BicepCompletionContext(kind);
+            return new BicepCompletionContext(kind, @object);
         }
 
         /// <summary>
@@ -133,6 +136,39 @@ namespace Bicep.LanguageServer.Completions
                         // (by using exclusive span containment, the cursor position at the end of a keyword token 
                         // result counts as being outside of the declaration context)
                         return declaration.Keyword.Span.Contains(offset);
+                }
+            }
+
+            return false;
+        }
+
+        private static bool IsPropertyStartContext(List<SyntaxBase> matchingNodes, int offset, out ObjectSyntax? @object)
+        {
+            @object = null;
+
+            // the innermost object is the most relevent one for the current cursor position
+            var objectIndex = matchingNodes.FindLastIndex(matchingNodes.Count - 1, node => node is ObjectSyntax);
+            if (objectIndex < 0)
+            {
+                // none of the matching nodes are ObjectSyntax,
+                // so we cannot possibly be in a position to begin an object property
+                return false;
+            }
+
+            @object = (ObjectSyntax) matchingNodes[objectIndex];
+
+            // how many matching nodes remain including the object node itself
+            int nodeCount = matchingNodes.Count - objectIndex;
+
+            if (matchingNodes[^1] is Token token)
+            {
+                switch (nodeCount)
+                {
+                    case 2:
+                        return token.Type == TokenType.NewLine && offset > token.Span.Position;
+
+                    case 4:
+                        return matchingNodes[^2] is IdentifierSyntax && matchingNodes[^3] is ObjectPropertySyntax;
                 }
             }
 

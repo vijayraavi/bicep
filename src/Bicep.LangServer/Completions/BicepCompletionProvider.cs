@@ -16,7 +16,8 @@ namespace Bicep.LanguageServer.Completions
         {
             return GetDeclarationCompletions(context)
                 .Concat(GetSymbolCompletions(model, context))
-                .Concat(GetDeclarationTypeCompletions(context));
+                .Concat(GetDeclarationTypeCompletions(context))
+                .Concat(GetObjectPropertyCompletions(model, context));
         }
 
         private IEnumerable<CompletionItem> GetDeclarationCompletions(BicepCompletionContext completionContext)
@@ -96,7 +97,7 @@ namespace Bicep.LanguageServer.Completions
             return Enumerable.Empty<CompletionItem>();
         }
 
-        
+
         private static IEnumerable<CompletionItem> GetParameterTypeSnippets()
         {
             yield return CreateSnippetCompletion("secureObject", "Secure object", @"object {
@@ -131,6 +132,33 @@ namespace Bicep.LanguageServer.Completions
                 .SelectMany(ns => ns.Descendants.OfType<FunctionSymbol>()));
 
             return accessibleSymbols.Values;
+        }
+
+        private IEnumerable<CompletionItem> GetObjectPropertyCompletions(SemanticModel model, BicepCompletionContext context)
+        {
+            if (context.Kind.HasFlag(BicepCompletionContextKind.PropertyName) == false || context.Object == null)
+            {
+                return Enumerable.Empty<CompletionItem>();
+            }
+
+            // in order to provide completions for property names,
+            // we need to establish the type of the object first
+            var type = model.GetTypeInfo(context.Object);
+
+            return GetProperties(type).Select(property => CreateKeywordCompletion(property.Name, $"{property.Name} ({property.TypeReference.Type.Name})"));
+        }
+
+        private static IEnumerable<TypeProperty> GetProperties(TypeSymbol type)
+        {
+            switch (type)
+            {
+                case ObjectType objectType:
+                    return objectType.Properties.Values;
+
+                case ResourceType resourceType:
+                default:
+                    return Enumerable.Empty<TypeProperty>();
+            }
         }
 
         private static CompletionItem CreateKeywordCompletion(string keyword, string detail) =>
