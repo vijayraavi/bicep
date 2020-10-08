@@ -132,19 +132,40 @@ var previousEmitLimit = [
   }
 ]
 
-// #completionTest(0) -> declarations
+// previously this was not possible to emit correctly
+var previousEmitLimit2 = [
+  concat('s')
+  '${4}'
+  {
+    a: {
+      b: base64('s')
+      c: union({
+        a: 12 + 3
+      }, {
+        b: !true
+        c: 'hello'
+      })
+      d: resourceGroup().location
+      e: union({
+        x: true
+      }, {})
+      f: intersection({
+        q: 's' == 12
+      }, {})
+    }
+  }
+]
 
-var myVar = 'hello'
-var myVar2 = any({
-  something: myVar
-})
-var myVar3 = any(any({
-  something: myVar
-}))
-var myVar4 = length(any(concat('s','a')))
+// previously this was not possible to emit correctly
+var previousEmitLimit3 = {
+  a: {
+    b: {
+      a: resourceGroup().location
+    } == 2
+    c: concat([
 
-// identifiers can have underscores
-var _ = 3
-var __ = 10 * _
-var _0a_1b = true
-var _1_ = _0a_1b || (__ + _ % 2 == 0)
+    ], [
+      true
+    ])
+  }
+}

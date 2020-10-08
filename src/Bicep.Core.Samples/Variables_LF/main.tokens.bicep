@@ -671,105 +671,189 @@ var previousEmitLimit = [
 //@[0:1) RightSquare |]|
 //@[1:3) NewLine |\n\n|
 
-// #completionTest(0) -> declarations
-//@[37:39) NewLine |\n\n|
-
-var myVar = 'hello'
+// previously this was not possible to emit correctly
+//@[53:54) NewLine |\n|
+var previousEmitLimit2 = [
 //@[0:3) Identifier |var|
-//@[4:9) Identifier |myVar|
-//@[10:11) Assignment |=|
-//@[12:19) StringComplete |'hello'|
-//@[19:20) NewLine |\n|
-var myVar2 = any({
-//@[0:3) Identifier |var|
-//@[4:10) Identifier |myVar2|
-//@[11:12) Assignment |=|
-//@[13:16) Identifier |any|
-//@[16:17) LeftParen |(|
-//@[17:18) LeftBrace |{|
-//@[18:19) NewLine |\n|
-  something: myVar
-//@[2:11) Identifier |something|
-//@[11:12) Colon |:|
-//@[13:18) Identifier |myVar|
-//@[18:19) NewLine |\n|
-})
-//@[0:1) RightBrace |}|
-//@[1:2) RightParen |)|
-//@[2:3) NewLine |\n|
-var myVar3 = any(any({
-//@[0:3) Identifier |var|
-//@[4:10) Identifier |myVar3|
-//@[11:12) Assignment |=|
-//@[13:16) Identifier |any|
-//@[16:17) LeftParen |(|
-//@[17:20) Identifier |any|
-//@[20:21) LeftParen |(|
-//@[21:22) LeftBrace |{|
-//@[22:23) NewLine |\n|
-  something: myVar
-//@[2:11) Identifier |something|
-//@[11:12) Colon |:|
-//@[13:18) Identifier |myVar|
-//@[18:19) NewLine |\n|
-}))
-//@[0:1) RightBrace |}|
-//@[1:2) RightParen |)|
-//@[2:3) RightParen |)|
+//@[4:22) Identifier |previousEmitLimit2|
+//@[23:24) Assignment |=|
+//@[25:26) LeftSquare |[|
+//@[26:27) NewLine |\n|
+  concat('s')
+//@[2:8) Identifier |concat|
+//@[8:9) LeftParen |(|
+//@[9:12) StringComplete |'s'|
+//@[12:13) RightParen |)|
+//@[13:14) NewLine |\n|
+  '${4}'
+//@[2:5) StringLeftPiece |'${|
+//@[5:6) Number |4|
+//@[6:8) StringRightPiece |}'|
+//@[8:9) NewLine |\n|
+  {
+//@[2:3) LeftBrace |{|
 //@[3:4) NewLine |\n|
-var myVar4 = length(any(concat('s','a')))
-//@[0:3) Identifier |var|
-//@[4:10) Identifier |myVar4|
-//@[11:12) Assignment |=|
-//@[13:19) Identifier |length|
-//@[19:20) LeftParen |(|
-//@[20:23) Identifier |any|
-//@[23:24) LeftParen |(|
-//@[24:30) Identifier |concat|
-//@[30:31) LeftParen |(|
-//@[31:34) StringComplete |'s'|
-//@[34:35) Comma |,|
-//@[35:38) StringComplete |'a'|
-//@[38:39) RightParen |)|
-//@[39:40) RightParen |)|
-//@[40:41) RightParen |)|
-//@[41:43) NewLine |\n\n|
-
-// identifiers can have underscores
-//@[35:36) NewLine |\n|
-var _ = 3
-//@[0:3) Identifier |var|
-//@[4:5) Identifier |_|
-//@[6:7) Assignment |=|
-//@[8:9) Number |3|
-//@[9:10) NewLine |\n|
-var __ = 10 * _
-//@[0:3) Identifier |var|
-//@[4:6) Identifier |__|
-//@[7:8) Assignment |=|
-//@[9:11) Number |10|
-//@[12:13) Asterisk |*|
-//@[14:15) Identifier |_|
-//@[15:16) NewLine |\n|
-var _0a_1b = true
-//@[0:3) Identifier |var|
-//@[4:10) Identifier |_0a_1b|
-//@[11:12) Assignment |=|
-//@[13:17) TrueKeyword |true|
+    a: {
+//@[4:5) Identifier |a|
+//@[5:6) Colon |:|
+//@[7:8) LeftBrace |{|
+//@[8:9) NewLine |\n|
+      b: base64('s')
+//@[6:7) Identifier |b|
+//@[7:8) Colon |:|
+//@[9:15) Identifier |base64|
+//@[15:16) LeftParen |(|
+//@[16:19) StringComplete |'s'|
+//@[19:20) RightParen |)|
+//@[20:21) NewLine |\n|
+      c: union({
+//@[6:7) Identifier |c|
+//@[7:8) Colon |:|
+//@[9:14) Identifier |union|
+//@[14:15) LeftParen |(|
+//@[15:16) LeftBrace |{|
+//@[16:17) NewLine |\n|
+        a: 12 + 3
+//@[8:9) Identifier |a|
+//@[9:10) Colon |:|
+//@[11:13) Number |12|
+//@[14:15) Plus |+|
+//@[16:17) Number |3|
 //@[17:18) NewLine |\n|
-var _1_ = _0a_1b || (__ + _ % 2 == 0)
+      }, {
+//@[6:7) RightBrace |}|
+//@[7:8) Comma |,|
+//@[9:10) LeftBrace |{|
+//@[10:11) NewLine |\n|
+        b: !true
+//@[8:9) Identifier |b|
+//@[9:10) Colon |:|
+//@[11:12) Exclamation |!|
+//@[12:16) TrueKeyword |true|
+//@[16:17) NewLine |\n|
+        c: 'hello'
+//@[8:9) Identifier |c|
+//@[9:10) Colon |:|
+//@[11:18) StringComplete |'hello'|
+//@[18:19) NewLine |\n|
+      })
+//@[6:7) RightBrace |}|
+//@[7:8) RightParen |)|
+//@[8:9) NewLine |\n|
+      d: resourceGroup().location
+//@[6:7) Identifier |d|
+//@[7:8) Colon |:|
+//@[9:22) Identifier |resourceGroup|
+//@[22:23) LeftParen |(|
+//@[23:24) RightParen |)|
+//@[24:25) Dot |.|
+//@[25:33) Identifier |location|
+//@[33:34) NewLine |\n|
+      e: union({
+//@[6:7) Identifier |e|
+//@[7:8) Colon |:|
+//@[9:14) Identifier |union|
+//@[14:15) LeftParen |(|
+//@[15:16) LeftBrace |{|
+//@[16:17) NewLine |\n|
+        x: true
+//@[8:9) Identifier |x|
+//@[9:10) Colon |:|
+//@[11:15) TrueKeyword |true|
+//@[15:16) NewLine |\n|
+      }, {})
+//@[6:7) RightBrace |}|
+//@[7:8) Comma |,|
+//@[9:10) LeftBrace |{|
+//@[10:11) RightBrace |}|
+//@[11:12) RightParen |)|
+//@[12:13) NewLine |\n|
+      f: intersection({
+//@[6:7) Identifier |f|
+//@[7:8) Colon |:|
+//@[9:21) Identifier |intersection|
+//@[21:22) LeftParen |(|
+//@[22:23) LeftBrace |{|
+//@[23:24) NewLine |\n|
+        q: 's' == 12
+//@[8:9) Identifier |q|
+//@[9:10) Colon |:|
+//@[11:14) StringComplete |'s'|
+//@[15:17) Equals |==|
+//@[18:20) Number |12|
+//@[20:21) NewLine |\n|
+      }, {})
+//@[6:7) RightBrace |}|
+//@[7:8) Comma |,|
+//@[9:10) LeftBrace |{|
+//@[10:11) RightBrace |}|
+//@[11:12) RightParen |)|
+//@[12:13) NewLine |\n|
+    }
+//@[4:5) RightBrace |}|
+//@[5:6) NewLine |\n|
+  }
+//@[2:3) RightBrace |}|
+//@[3:4) NewLine |\n|
+]
+//@[0:1) RightSquare |]|
+//@[1:3) NewLine |\n\n|
+
+// previously this was not possible to emit correctly
+//@[53:54) NewLine |\n|
+var previousEmitLimit3 = {
 //@[0:3) Identifier |var|
-//@[4:7) Identifier |_1_|
-//@[8:9) Assignment |=|
-//@[10:16) Identifier |_0a_1b|
-//@[17:19) LogicalOr ||||
-//@[20:21) LeftParen |(|
-//@[21:23) Identifier |__|
-//@[24:25) Plus |+|
-//@[26:27) Identifier |_|
-//@[28:29) Modulo |%|
-//@[30:31) Number |2|
-//@[32:34) Equals |==|
-//@[35:36) Number |0|
-//@[36:37) RightParen |)|
-//@[37:37) EndOfFile ||
+//@[4:22) Identifier |previousEmitLimit3|
+//@[23:24) Assignment |=|
+//@[25:26) LeftBrace |{|
+//@[26:27) NewLine |\n|
+  a: {
+//@[2:3) Identifier |a|
+//@[3:4) Colon |:|
+//@[5:6) LeftBrace |{|
+//@[6:7) NewLine |\n|
+    b: {
+//@[4:5) Identifier |b|
+//@[5:6) Colon |:|
+//@[7:8) LeftBrace |{|
+//@[8:9) NewLine |\n|
+      a: resourceGroup().location
+//@[6:7) Identifier |a|
+//@[7:8) Colon |:|
+//@[9:22) Identifier |resourceGroup|
+//@[22:23) LeftParen |(|
+//@[23:24) RightParen |)|
+//@[24:25) Dot |.|
+//@[25:33) Identifier |location|
+//@[33:34) NewLine |\n|
+    } == 2
+//@[4:5) RightBrace |}|
+//@[6:8) Equals |==|
+//@[9:10) Number |2|
+//@[10:11) NewLine |\n|
+    c: concat([
+//@[4:5) Identifier |c|
+//@[5:6) Colon |:|
+//@[7:13) Identifier |concat|
+//@[13:14) LeftParen |(|
+//@[14:15) LeftSquare |[|
+//@[15:17) NewLine |\n\n|
+
+    ], [
+//@[4:5) RightSquare |]|
+//@[5:6) Comma |,|
+//@[7:8) LeftSquare |[|
+//@[8:9) NewLine |\n|
+      true
+//@[6:10) TrueKeyword |true|
+//@[10:11) NewLine |\n|
+    ])
+//@[4:5) RightSquare |]|
+//@[5:6) RightParen |)|
+//@[6:7) NewLine |\n|
+  }
+//@[2:3) RightBrace |}|
+//@[3:4) NewLine |\n|
+}
+//@[0:1) RightBrace |}|
+//@[1:1) EndOfFile ||

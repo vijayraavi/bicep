@@ -169,27 +169,42 @@ var previousEmitLimit = [
   }
 ]
 
-// #completionTest(0) -> declarations
+// previously this was not possible to emit correctly
+var previousEmitLimit2 = [
+//@[4:22) Variable previousEmitLimit2. Type: array. Declaration start char: 0, length: 324
+  concat('s')
+  '${4}'
+  {
+    a: {
+      b: base64('s')
+      c: union({
+        a: 12 + 3
+      }, {
+        b: !true
+        c: 'hello'
+      })
+      d: resourceGroup().location
+      e: union({
+        x: true
+      }, {})
+      f: intersection({
+        q: 's' == 12
+      }, {})
+    }
+  }
+]
 
-var myVar = 'hello'
-//@[4:9) Variable myVar. Type: 'hello'. Declaration start char: 0, length: 19
-var myVar2 = any({
-//@[4:10) Variable myVar2. Type: any. Declaration start char: 0, length: 40
-  something: myVar
-})
-var myVar3 = any(any({
-//@[4:10) Variable myVar3. Type: any. Declaration start char: 0, length: 45
-  something: myVar
-}))
-var myVar4 = length(any(concat('s','a')))
-//@[4:10) Variable myVar4. Type: int. Declaration start char: 0, length: 41
+// previously this was not possible to emit correctly
+var previousEmitLimit3 = {
+//@[4:22) Variable previousEmitLimit3. Type: object. Declaration start char: 0, length: 137
+  a: {
+    b: {
+      a: resourceGroup().location
+    } == 2
+    c: concat([
 
-// identifiers can have underscores
-var _ = 3
-//@[4:5) Variable _. Type: int. Declaration start char: 0, length: 9
-var __ = 10 * _
-//@[4:6) Variable __. Type: int. Declaration start char: 0, length: 15
-var _0a_1b = true
-//@[4:10) Variable _0a_1b. Type: bool. Declaration start char: 0, length: 17
-var _1_ = _0a_1b || (__ + _ % 2 == 0)
-//@[4:7) Variable _1_. Type: bool. Declaration start char: 0, length: 37
+    ], [
+      true
+    ])
+  }
+}

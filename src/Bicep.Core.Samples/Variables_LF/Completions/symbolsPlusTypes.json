@@ -1,41 +1,5 @@
 [
   {
-    "label": "_",
-    "kind": "variable",
-    "detail": "_",
-    "deprecated": false,
-    "preselect": false,
-    "insertText": "_",
-    "insertTextFormat": "plainText"
-  },
-  {
-    "label": "__",
-    "kind": "variable",
-    "detail": "__",
-    "deprecated": false,
-    "preselect": false,
-    "insertText": "__",
-    "insertTextFormat": "plainText"
-  },
-  {
-    "label": "_0a_1b",
-    "kind": "variable",
-    "detail": "_0a_1b",
-    "deprecated": false,
-    "preselect": false,
-    "insertText": "_0a_1b",
-    "insertTextFormat": "plainText"
-  },
-  {
-    "label": "_1_",
-    "kind": "variable",
-    "detail": "_1_",
-    "deprecated": false,
-    "preselect": false,
-    "insertText": "_1_",
-    "insertTextFormat": "plainText"
-  },
-  {
     "label": "add",
     "kind": "function",
     "detail": "add",
@@ -675,42 +639,6 @@
     "insertTextFormat": "plainText"
   },
   {
-    "label": "myVar",
-    "kind": "variable",
-    "detail": "myVar",
-    "deprecated": false,
-    "preselect": false,
-    "insertText": "myVar",
-    "insertTextFormat": "plainText"
-  },
-  {
-    "label": "myVar2",
-    "kind": "variable",
-    "detail": "myVar2",
-    "deprecated": false,
-    "preselect": false,
-    "insertText": "myVar2",
-    "insertTextFormat": "plainText"
-  },
-  {
-    "label": "myVar3",
-    "kind": "variable",
-    "detail": "myVar3",
-    "deprecated": false,
-    "preselect": false,
-    "insertText": "myVar3",
-    "insertTextFormat": "plainText"
-  },
-  {
-    "label": "myVar4",
-    "kind": "variable",
-    "detail": "myVar4",
-    "deprecated": false,
-    "preselect": false,
-    "insertText": "myVar4",
-    "insertTextFormat": "plainText"
-  },
-  {
     "label": "namedPropertyIndexer",
     "kind": "variable",
     "detail": "namedPropertyIndexer",
@@ -798,6 +726,24 @@
     "deprecated": false,
     "preselect": false,
     "insertText": "previousEmitLimit",
+    "insertTextFormat": "plainText"
+  },
+  {
+    "label": "previousEmitLimit2",
+    "kind": "variable",
+    "detail": "previousEmitLimit2",
+    "deprecated": false,
+    "preselect": false,
+    "insertText": "previousEmitLimit2",
+    "insertTextFormat": "plainText"
+  },
+  {
+    "label": "previousEmitLimit3",
+    "kind": "variable",
+    "detail": "previousEmitLimit3",
+    "deprecated": false,
+    "preselect": false,
+    "insertText": "previousEmitLimit3",
     "insertTextFormat": "plainText"
   },
   {
