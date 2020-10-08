@@ -162,7 +162,7 @@ namespace Bicep.Core.TypeSystem
                 // assume "any" type when the parameter has parse errors (either missing or was skipped)
                 var declaredType = syntax.ParameterType == null
                     ? LanguageConstants.Any
-                    : LanguageConstants.TryGetDeclarationType(syntax.ParameterType.TypeName);
+                    : DeclaredType.GetDeclaredType(syntax.ParameterType);
 
                 if (declaredType == null)
                 {
