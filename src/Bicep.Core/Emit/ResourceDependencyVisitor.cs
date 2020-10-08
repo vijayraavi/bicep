@@ -78,8 +78,6 @@ namespace Bicep.Core.Emit
             this.currentDeclaration = prevDeclaration;
         }
 
-        // TODO: implementation for modules!
-
         public override void VisitVariableDeclarationSyntax(VariableDeclarationSyntax syntax)
         {
             if (!(this.model.GetSymbolInfo(syntax) is VariableSymbol variableSymbol))

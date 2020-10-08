@@ -21,10 +21,10 @@ namespace Bicep.Core.UnitTests.TypeSystem
             const string expectedMessage = "Properties of the symbol context should not be accessed until name binding is completed.";
 
             var bindings = new Dictionary<SyntaxBase, Symbol>();
-            var cyclesBySyntax = new Dictionary<SyntaxBase, ImmutableArray<DeclaredSymbol>>();
+            var cyclesBySymbol = new Dictionary<DeclaredSymbol, ImmutableArray<DeclaredSymbol>>();
             var compilationCollection = CompilationHelper.CreateCollectionWithSingleFile(TestResourceTypeProvider.Create(), "");
             var compilation = CompilationHelper.GetSingleFileCompilation(compilationCollection);
-            var typeManager = new TypeManager(TestResourceTypeProvider.Create(), bindings, cyclesBySyntax);
+            var typeManager = new TypeManager(TestResourceTypeProvider.Create(), bindings, cyclesBySymbol);
             var context = new SymbolContext(typeManager, bindings, compilationCollection, compilation);
 
             Action byName = () =>

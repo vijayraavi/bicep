@@ -8,6 +8,7 @@ using Bicep.Core.FileSystem;
 using Bicep.Core.Syntax;
 using Bicep.Core.Text;
 using Bicep.Core.TypeSystem;
+using Bicep.Core.Utils;
 
 namespace Bicep.Core.SemanticModel
 {
@@ -41,7 +42,14 @@ namespace Bicep.Core.SemanticModel
         {
             var compilationCollection = new CompilationCollection(fileResolver, resourceTypeProvider);
 
-            compilationCollection.PopulateRecursive(initialFileName);
+            var moduleGraph = new Dictionary<Compilation, HashSet<Compilation>>();
+            compilationCollection.PopulateRecursive(initialFileName, moduleGraph);
+
+            var moduleLookup = moduleGraph
+                .SelectMany(kvp => kvp.Value.Select(x => (kvp.Key, x)))
+                .ToLookup(x => x.Key, x => x.Item1);
+
+            CycleDetector<Compilation>.FindCycles(moduleLookup);
 
             return compilationCollection;
         }
@@ -52,7 +60,14 @@ namespace Bicep.Core.SemanticModel
 
             compilationCollection.RegisterCompilation(initialFileName, initialFileContents);
 
-            compilationCollection.PopulateRecursive(initialFileName);
+            var moduleGraph = new Dictionary<Compilation, HashSet<Compilation>>();
+            compilationCollection.PopulateRecursive(initialFileName, moduleGraph);
+
+            var moduleLookup = moduleGraph
+                .SelectMany(kvp => kvp.Value.Select(x => (kvp.Key, x)))
+                .ToLookup(x => x.Key, x => x.Item1);
+
+            CycleDetector<Compilation>.FindCycles(moduleGraph);
 
             return compilationCollection;
         }
@@ -62,7 +77,7 @@ namespace Bicep.Core.SemanticModel
             var moduleFileName = fileResolver.TryResolveModulePath(fileName, parentCompilation.FileName);
             if (moduleFileName == null)
             {
-                failureMessage = null;
+                failureMessage = $"Unable to resolve path for module \"{fileName}\"";
                 return null;
             }
 
@@ -107,9 +122,8 @@ namespace Bicep.Core.SemanticModel
             return compilation;
         }
 
-        private void PopulateRecursive(string fileName)
+        private void PopulateRecursive(string fileName, Dictionary<Compilation, HashSet<Compilation>> moduleGraph)
         {
-            // TODO: cycle detection here
             var compilation = TryGetCompilation(fileName, out _);
             if (compilation == null)
             {
@@ -123,13 +137,27 @@ namespace Bicep.Core.SemanticModel
                 var moduleFileName = TryGetNormalizedModulePath(fileName, module);
                 if (moduleFileName == null)
                 {
-                    // this is just to prepopulate the collection. We'll raise diagnostics for this during compilation
+                    // File load failed, but we can ignore for now; we'll raise diagnostics for this during compilation.
                     continue;
                 }
 
-                if (!compilations.TryGetValue(moduleFileName, out var moduleCompilation))
+                if (!compilations.ContainsKey(moduleFileName))
                 {
-                    PopulateRecursive(moduleFileName);
+                    PopulateRecursive(moduleFileName, moduleGraph);
+                }
+
+                // For the purposes of cycle detection, we only need to care about files that have been loaded.
+                // Files that haven't been loaded can't declare any modules!
+                if (!moduleGraph.TryGetValue(compilation, out var childrenHashSet))
+                {
+                    childrenHashSet = new HashSet<Compilation>();
+                    moduleGraph[compilation] = childrenHashSet;
+                }
+
+                var moduleCompilation = compilations[moduleFileName].Compilation;
+                if (moduleCompilation != null)
+                {
+                    childrenHashSet.Add(moduleCompilation);
                 }
             }
         }
