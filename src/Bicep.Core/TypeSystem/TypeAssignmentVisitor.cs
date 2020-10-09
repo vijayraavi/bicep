@@ -39,9 +39,16 @@ namespace Bicep.Core.TypeSystem
         private readonly TypeManager typeManager;
         private readonly IReadOnlyDictionary<SyntaxBase, Symbol> bindings;
         private readonly IReadOnlyDictionary<SyntaxBase, ImmutableArray<DeclaredSymbol>> cyclesBySyntax;
-        private IDictionary<SyntaxBase, TypeAssignment> assignedTypes;
+        private readonly IDictionary<SyntaxBase, TypeAssignment> assignedTypes;
+        private readonly IDictionary<SyntaxBase, TypeAssignment> declaredTypes;
+        private readonly SyntaxHierarchy hierarchy;
 
-        public TypeAssignmentVisitor(IResourceTypeProvider resourceTypeProvider, TypeManager typeManager, IReadOnlyDictionary<SyntaxBase, Symbol> bindings, IReadOnlyDictionary<SyntaxBase, ImmutableArray<DeclaredSymbol>> cyclesBySyntax)
+        public TypeAssignmentVisitor(
+            IResourceTypeProvider resourceTypeProvider,
+            TypeManager typeManager,
+            IReadOnlyDictionary<SyntaxBase, Symbol> bindings,
+            IReadOnlyDictionary<SyntaxBase, ImmutableArray<DeclaredSymbol>> cyclesBySyntax,
+            SyntaxHierarchy hierarchy)
         {
             this.resourceTypeProvider = resourceTypeProvider;
             this.typeManager = typeManager;
@@ -51,6 +58,8 @@ namespace Bicep.Core.TypeSystem
             this.bindings = bindings;
             this.cyclesBySyntax = cyclesBySyntax;
             this.assignedTypes = new Dictionary<SyntaxBase, TypeAssignment>();
+            this.declaredTypes = new Dictionary<SyntaxBase, TypeAssignment>();
+            this.hierarchy = hierarchy;
         }
 
         private TypeAssignment GetTypeAssignment(SyntaxBase syntax)
@@ -65,8 +74,23 @@ namespace Bicep.Core.TypeSystem
             return typeAssignment;
         }
 
+        private TypeAssignment? GetDeclaredTypeAssignment(SyntaxBase syntax)
+        {
+            // causes stack overflow Visit(syntax);
+
+            if (declaredTypes.TryGetValue(syntax, out var typeAssignment))
+            {
+                return typeAssignment;
+            }
+
+            return null;
+        }
+
         public TypeSymbol GetTypeInfo(SyntaxBase syntax)
             => GetTypeAssignment(syntax).Reference.Type;
+
+        public TypeSymbol? GetDeclaredType(SyntaxBase syntax)
+            => GetDeclaredTypeAssignment(syntax)?.Reference.Type;
 
         public IEnumerable<Diagnostic> GetAllDiagnostics()
             => assignedTypes.Values.SelectMany(x => x.Diagnostics);
@@ -86,6 +110,14 @@ namespace Bicep.Core.TypeSystem
             }
 
             assignedTypes[syntax] = assignFunc();
+        }
+
+        private void AssignDeclaredType(SyntaxBase syntax, ITypeReference? typeReference)
+        {
+            if (typeReference != null)
+            {
+                this.declaredTypes[syntax] = new TypeAssignment(typeReference);
+            }
         }
 
         private void AssignType(SyntaxBase syntax, Func<ITypeReference> assignFunc)
@@ -147,6 +179,7 @@ namespace Bicep.Core.TypeSystem
                 }
 
                 var declaredType = resourceTypeProvider.GetType(typeReference);
+                AssignDeclaredType(syntax, declaredType);
 
                 if (declaredType is ResourceType resourceType && !resourceTypeProvider.HasType(resourceType.TypeReference))
                 {
@@ -299,6 +332,8 @@ namespace Bicep.Core.TypeSystem
                     .Select(p => typeManager.GetTypeInfo(p));
 
                 var additionalPropertiesType = additionalProperties.Any() ? UnionType.Create(additionalProperties) : null;
+
+                AssignDeclaredType(syntax, GetDeclaredTypeInternal(syntax));
 
                 // TODO: Add structural naming?
                 return new NamedObjectType(LanguageConstants.Object.Name, TypeSymbolValidationFlags.Default, namedProperties, additionalPropertiesType);
@@ -865,6 +900,21 @@ namespace Bicep.Core.TypeSystem
                     return accumulated;
                 },
                 accumulated => accumulated);
+        }
+
+        private TypeSymbol? GetDeclaredTypeInternal(ObjectSyntax syntax)
+        {
+            var parent = this.hierarchy.GetParent(syntax);
+
+            switch (parent)
+            {
+                case ResourceDeclarationSyntax _:
+                    // the object literal's parent is a resource declaration, which makes this the body of the resource
+                    // the declared type will be the same as the parent
+                    return GetDeclaredTypeAssignment(parent)?.Reference.Type;
+            }
+
+            return null;
         }
     }
 }
