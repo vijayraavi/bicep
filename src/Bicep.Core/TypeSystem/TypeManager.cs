@@ -23,6 +23,9 @@ namespace Bicep.Core.TypeSystem
         }
 
         public TypeSymbol GetTypeInfo(SyntaxBase syntax)
+            => typeAssignmentVisitor.GetTypeInfo(syntax).AssignedType.Type;
+
+        public TypeAssignment GetTypeAssignment(SyntaxBase syntax) 
             => typeAssignmentVisitor.GetTypeInfo(syntax);
 
         public IEnumerable<Diagnostic> GetAllDiagnostics()

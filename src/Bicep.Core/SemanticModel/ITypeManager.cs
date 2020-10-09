@@ -11,6 +11,8 @@ namespace Bicep.Core.SemanticModel
     {
         TypeSymbol GetTypeInfo(SyntaxBase syntax);
 
+        TypeAssignment GetTypeAssignment(SyntaxBase syntax);
+
         IEnumerable<Diagnostic> GetAllDiagnostics();
     }
 }
