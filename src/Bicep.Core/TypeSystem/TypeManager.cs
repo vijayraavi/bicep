@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
 using Bicep.Core.Diagnostics;
 using Bicep.Core.SemanticModel;
 using Bicep.Core.Syntax;
@@ -24,6 +23,9 @@ namespace Bicep.Core.TypeSystem
 
         public TypeSymbol GetTypeInfo(SyntaxBase syntax)
             => typeAssignmentVisitor.GetTypeInfo(syntax);
+
+        public TypeSymbol? GetDeclaredType(SyntaxBase syntax)
+            => typeAssignmentVisitor.GetDeclaredType(syntax);
 
         public IEnumerable<Diagnostic> GetAllDiagnostics()
             => typeAssignmentVisitor.GetAllDiagnostics();

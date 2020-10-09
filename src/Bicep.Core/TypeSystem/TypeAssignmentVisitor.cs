@@ -179,6 +179,8 @@ namespace Bicep.Core.TypeSystem
                 }
 
                 var declaredType = resourceTypeProvider.GetType(typeReference);
+                
+                // just established the declared type - assign it!
                 AssignDeclaredType(syntax, declaredType);
 
                 if (declaredType is ResourceType resourceType && !resourceTypeProvider.HasType(resourceType.TypeReference))
@@ -307,6 +309,9 @@ namespace Bicep.Core.TypeSystem
 
         public override void VisitObjectSyntax(ObjectSyntax syntax)
             => AssignType(syntax, () => {
+                // assigning declared type depends on parent and nothing in the object itself
+                // so do it immediately
+                AssignDeclaredType(syntax, GetDeclaredTypeInternal(syntax));
                 var errors = new List<ErrorDiagnostic>();
 
                 var propertyTypes = new List<TypeSymbol>();
@@ -333,14 +338,15 @@ namespace Bicep.Core.TypeSystem
 
                 var additionalPropertiesType = additionalProperties.Any() ? UnionType.Create(additionalProperties) : null;
 
-                AssignDeclaredType(syntax, GetDeclaredTypeInternal(syntax));
-
                 // TODO: Add structural naming?
                 return new NamedObjectType(LanguageConstants.Object.Name, TypeSymbolValidationFlags.Default, namedProperties, additionalPropertiesType);
             });
 
         public override void VisitObjectPropertySyntax(ObjectPropertySyntax syntax)
-            => AssignType(syntax, () => {
+            => AssignType(syntax, () =>
+            {
+                AssignDeclaredType(syntax, GetDeclaredTypeInternal(syntax));
+
                 var errors = new List<ErrorDiagnostic>();
                 var types = new List<TypeSymbol>();
 
@@ -911,7 +917,48 @@ namespace Bicep.Core.TypeSystem
                 case ResourceDeclarationSyntax _:
                     // the object literal's parent is a resource declaration, which makes this the body of the resource
                     // the declared type will be the same as the parent
-                    return GetDeclaredTypeAssignment(parent)?.Reference.Type;
+                    var parentType = GetDeclaredTypeAssignment(parent)?.Reference.Type;
+                    if (parentType is ResourceType resourceType)
+                    {
+                        return resourceType.Body.Type;
+                    }
+
+                    break;
+            }
+
+            return null;
+        }
+
+        private TypeSymbol? GetDeclaredTypeInternal(ObjectPropertySyntax syntax)
+        {
+            var propertyName = syntax.TryGetKeyText();
+            var parent = this.hierarchy.GetParent(syntax);
+            if (propertyName == null || parent == null)
+            {
+                // the property name is an interpolated string (expression) OR the parent is missing
+                // cannot establish declared type
+                // TODO: Improve this when we have constant folding
+                return null;
+            }
+
+            var parentDeclaredType = GetDeclaredTypeAssignment(parent);
+            switch (parentDeclaredType?.Reference.Type)
+            {
+                // TODO: Add discriminated object case
+                case ObjectType objectType:
+                    // lookup declared property
+                    if (objectType.Properties.TryGetValue(propertyName, out var property))
+                    {
+                        return property.TypeReference.Type;
+                    }
+
+                    // if there are additional properties, try those
+                    if (objectType.AdditionalPropertiesType != null)
+                    {
+                        return objectType.AdditionalPropertiesType.Type;
+                    }
+
+                    break;
             }
 
             return null;

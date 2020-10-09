@@ -145,7 +145,13 @@ namespace Bicep.LanguageServer.Completions
             // we need to establish the type of the object first
             var type = model.GetTypeInfo(context.Object);
 
-            return GetProperties(type).Select(property => CreateKeywordCompletion(property.Name, $"{property.Name} ({property.TypeReference.Type.Name})"));
+            var declaredType = model.GetDeclaredType(context.Object);
+            if (declaredType == null)
+            {
+                return Enumerable.Empty<CompletionItem>();
+            }
+
+            return GetProperties(declaredType).Select(property => CreateKeywordCompletion(property.Name, $"{property.Name} ({property.TypeReference.Type.Name})"));
         }
 
         private static IEnumerable<TypeProperty> GetProperties(TypeSymbol type)
