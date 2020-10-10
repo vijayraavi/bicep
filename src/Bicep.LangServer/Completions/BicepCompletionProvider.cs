@@ -8,6 +8,7 @@ using System.Text;
 using Bicep.Core;
 using Bicep.Core.Parser;
 using Bicep.Core.SemanticModel;
+using Bicep.Core.Syntax;
 using Bicep.Core.TypeSystem;
 using Bicep.LanguageServer.Snippets;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
@@ -142,9 +143,6 @@ namespace Bicep.LanguageServer.Completions
 
         private IEnumerable<CompletionItem> GetObjectPropertyCompletions(SemanticModel model, BicepCompletionContext context)
         {
-            string[] foo = new[] {"lol"};
-            var blah = (foo ?? Enumerable.Empty<string>()).ToList();
-
             if (context.Kind.HasFlag(BicepCompletionContextKind.PropertyName) == false || context.Object == null)
             {
                 return Enumerable.Empty<CompletionItem>();
@@ -160,7 +158,13 @@ namespace Bicep.LanguageServer.Completions
                 return Enumerable.Empty<CompletionItem>();
             }
 
-            return GetProperties(declaredType).Select(CreatePropertyCompletion);
+            var specifiedPropertyNames = context.Object.ToKnownPropertyNames();
+
+            // exclude read-only properties as they can't be set
+            // exclude properties whose name has been specified in the object already
+            return GetProperties(declaredType)
+                .Where(p => p.Flags.HasFlag(TypePropertyFlags.ReadOnly) == false && specifiedPropertyNames.Contains(p.Name) == false)
+                .Select(CreatePropertyCompletion);
         }
 
         private static IEnumerable<TypeProperty> GetProperties(TypeSymbol type)
