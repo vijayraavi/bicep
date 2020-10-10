@@ -16,12 +16,14 @@ namespace Bicep.Core.UnitTests.TypeSystem
         {
             var program = SyntaxFactory.CreateFromText(@"
 param pass string {
-  secure: true
+  metadata: {
+    description: 'test'
+  }
 }
 
-resource foo 'Microsoft.Storage/storageAccounts@2019-07-01' = {
-  name: 'test'
-}
+//resource foo 'Microsoft.Storage/storageAccounts@2019-07-01' = {
+//  name: 'test'
+//}
 ");
 
             var compilation = new Compilation(new AzResourceTypeProvider(), program);

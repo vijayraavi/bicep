@@ -332,7 +332,7 @@ namespace Bicep.Core.TypeSystem
         public override void VisitObjectPropertySyntax(ObjectPropertySyntax syntax)
             => AssignType(syntax, () =>
             {
-                AssignDeclaredType(syntax, GetDeclaredTypeInternal(syntax));
+                 AssignDeclaredType(syntax, GetDeclaredTypeInternal(syntax));
 
                 var errors = new List<ErrorDiagnostic>();
                 var types = new List<TypeSymbol>();
@@ -989,6 +989,11 @@ namespace Bicep.Core.TypeSystem
                     // however we need the parameter's assigned type to determine the modifier type
                     var parameterAssignedType = GetParameterAssignedType(parameterDeclaration, parentType.Type.Type);
                     return LanguageConstants.CreateParameterModifierType(parentType, parameterAssignedType);
+
+                case ObjectPropertySyntax property:
+                    // the object is a value of a property of another object
+                    // use the declared type of the property
+                    return parentType;
             }
 
             return null;

@@ -165,7 +165,7 @@ namespace Bicep.LanguageServer.Completions
                 switch (nodeCount)
                 {
                     case 2:
-                        return token.Type == TokenType.NewLine && offset > token.Span.Position;
+                        return token.Type == TokenType.NewLine; // && offset > token.Span.Position;
 
                     case 4:
                         return matchingNodes[^2] is IdentifierSyntax && matchingNodes[^3] is ObjectPropertySyntax;
