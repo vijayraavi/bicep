@@ -204,25 +204,12 @@ namespace Bicep.Core.TypeSystem
                 {
                     return new ErrorTypeSymbol(DiagnosticBuilder.ForPosition(syntax.Type).InvalidParameterType());
                 }
-                
-                var assignedType = declaredType;
-                if (object.ReferenceEquals(assignedType, LanguageConstants.String))
-                {
-                    var allowedItemTypes = SyntaxHelper.TryGetAllowedItems(syntax)?
-                        .Select(item => typeManager.GetTypeInfo(item));
 
-                    if (allowedItemTypes != null && allowedItemTypes.All(itemType => itemType is StringLiteralType))
-                    {
-                        assignedType = UnionType.Create(allowedItemTypes);
-                    }
-                    else
-                    {
-                        // In order to support assignment for a generic string to enum-typed properties (which generally is forbidden),
-                        // we need to relax the validation for string parameters without 'allowed' values specified.
-                        assignedType = LanguageConstants.LooseString;
-                    }
-                }
-                
+                // just established the declared type
+                AssignDeclaredType(syntax, declaredType);
+
+                var assignedType = GetParameterAssignedType(syntax, declaredType);
+
                 switch (syntax.Modifier)
                 {
                     case ParameterDefaultValueSyntax defaultValueSyntax:
@@ -370,7 +357,11 @@ namespace Bicep.Core.TypeSystem
             });
 
         public override void VisitArrayItemSyntax(ArrayItemSyntax syntax)
-            => AssignType(syntax, () => typeManager.GetTypeInfo(syntax.Value));
+            => AssignType(syntax, () =>
+            {
+                AssignDeclaredType(syntax, GetDeclaredTypeInternal(syntax));
+                return typeManager.GetTypeInfo(syntax.Value);
+            });
 
         public override void VisitParenthesizedExpressionSyntax(ParenthesizedExpressionSyntax syntax)
             => AssignType(syntax, () => typeManager.GetTypeInfo(syntax.Expression));
@@ -379,7 +370,10 @@ namespace Bicep.Core.TypeSystem
             => AssignType(syntax, () => typeManager.GetTypeInfo(syntax.Expression));
 
         public override void VisitArraySyntax(ArraySyntax syntax)
-            => AssignType(syntax, () => {
+            => AssignType(syntax, () =>
+            {
+                AssignDeclaredType(syntax, GetDeclaredTypeInternal(syntax));
+                
                 var errors = new List<ErrorDiagnostic>();
 
                 var itemTypes = new List<TypeSymbol>(syntax.Children.Length);
@@ -908,22 +902,93 @@ namespace Bicep.Core.TypeSystem
                 accumulated => accumulated);
         }
 
-        private TypeSymbol? GetDeclaredTypeInternal(ObjectSyntax syntax)
+        private TypeSymbol GetParameterAssignedType(ParameterDeclarationSyntax syntax, TypeSymbol declaredType)
+        {
+            var assignedType = declaredType;
+            if (object.ReferenceEquals(assignedType, LanguageConstants.String))
+            {
+                var allowedItemTypes = SyntaxHelper.TryGetAllowedItems(syntax)?
+                    .Select(item => typeManager.GetTypeInfo(item));
+
+                if (allowedItemTypes != null && allowedItemTypes.All(itemType => itemType is StringLiteralType))
+                {
+                    assignedType = UnionType.Create(allowedItemTypes);
+                }
+                else
+                {
+                    // In order to support assignment for a generic string to enum-typed properties (which generally is forbidden),
+                    // we need to relax the validation for string parameters without 'allowed' values specified.
+                    assignedType = LanguageConstants.LooseString;
+                }
+            }
+
+            return assignedType;
+        }
+
+        private TypeSymbol? GetDeclaredTypeInternal(ArraySyntax syntax)
         {
             var parent = this.hierarchy.GetParent(syntax);
-
             switch (parent)
             {
-                case ResourceDeclarationSyntax _:
-                    // the object literal's parent is a resource declaration, which makes this the body of the resource
-                    // the declared type will be the same as the parent
+                // we are only handling paths in the AST that are going to produce a declared type
+                // arrays can exist under a variable declaration, but variables don't have declared types,
+                // so we don't need to check that case
+                case ObjectPropertySyntax _:
+                    // this array is a value of the property
+                    // the declared type should be the same as the array
+                    return GetDeclaredTypeAssignment(parent)?.Reference.Type;
+            }
+            
+            return null;
+        }
+
+        private TypeSymbol? GetDeclaredTypeInternal(ArrayItemSyntax syntax)
+        {
+            var parent = this.hierarchy.GetParent(syntax);
+            switch (parent)
+            {
+                case ArraySyntax _:
+                    // array items can only have array parents
+                    // use the declared item type
                     var parentType = GetDeclaredTypeAssignment(parent)?.Reference.Type;
-                    if (parentType is ResourceType resourceType)
+                    if (parentType is ArrayType arrayType)
                     {
-                        return resourceType.Body.Type;
+                        return arrayType.Item.Type;
                     }
 
                     break;
+            }
+
+            return null;
+        }
+
+        private TypeSymbol? GetDeclaredTypeInternal(ObjectSyntax syntax)
+        {
+            var parent = this.hierarchy.GetParent(syntax);
+            if (parent == null)
+            {
+                return null;
+            }
+
+            var parentType = GetDeclaredTypeAssignment(parent)?.Reference.Type;
+            if (parentType == null)
+            {
+                return null;
+            }
+
+            switch (parent)
+            {
+                case ResourceDeclarationSyntax _ when parentType is ResourceType resourceType:
+                    // the object literal's parent is a resource declaration, which makes this the body of the resource
+                    // the declared type will be the same as the parent
+                    return resourceType.Body.Type;
+
+                case ParameterDeclarationSyntax parameterDeclaration when ReferenceEquals(parameterDeclaration.Modifier, syntax):
+                    // the object is a modifier of a parameter type
+                    // the declared type should be the appropriate modifier type
+                    // however we need the parameter's assigned type to determine the modifier type
+                    var parameterAssignedType = GetParameterAssignedType(parameterDeclaration, parentType.Type.Type);
+                    return LanguageConstants.CreateParameterModifierType(parentType, parameterAssignedType);
             }
 
             return null;
@@ -941,8 +1006,8 @@ namespace Bicep.Core.TypeSystem
                 return null;
             }
 
-            var parentDeclaredType = GetDeclaredTypeAssignment(parent);
-            switch (parentDeclaredType?.Reference.Type)
+            var assignment = GetDeclaredTypeAssignment(parent);
+            switch (assignment?.Reference.Type)
             {
                 // TODO: Add discriminated object case
                 case ObjectType objectType:
@@ -959,6 +1024,20 @@ namespace Bicep.Core.TypeSystem
                     }
 
                     break;
+            }
+
+            return null;
+        }
+
+        private TypeSymbol? GetDeclaredTypeInternal(ParameterDefaultValueSyntax syntax)
+        {
+            var parent = this.hierarchy.GetParent(syntax);
+            if (parent is ParameterDeclarationSyntax)
+            {
+                var assignment = GetDeclaredTypeAssignment(parent);
+
+                // parameter default value can only live under a param declaration
+                return assignment?.Reference.Type;
             }
 
             return null;

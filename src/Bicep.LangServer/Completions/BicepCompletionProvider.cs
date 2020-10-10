@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Bicep.Core;
@@ -136,6 +138,9 @@ namespace Bicep.LanguageServer.Completions
 
         private IEnumerable<CompletionItem> GetObjectPropertyCompletions(SemanticModel model, BicepCompletionContext context)
         {
+            string[] foo = new[] {"lol"};
+            var blah = (foo ?? Enumerable.Empty<string>()).ToList();
+
             if (context.Kind.HasFlag(BicepCompletionContextKind.PropertyName) == false || context.Object == null)
             {
                 return Enumerable.Empty<CompletionItem>();
